@@ -15,8 +15,8 @@ import java.util.ArrayList;
 public class ThirdActivity extends AppCompatActivity {
 
     private EditText numberInput;
-    private TextView resultTextView;
     private Button checkButton;
+    private TextView resultTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,43 +24,46 @@ public class ThirdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_third);
 
         numberInput = findViewById(R.id.numberInput);
-        resultTextView = findViewById(R.id.resultTextView);
         checkButton = findViewById(R.id.checkButton);
+        resultTextView = findViewById(R.id.resultTextView);
 
         checkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String inputText = numberInput.getText().toString();
-                if (!inputText.isEmpty()) {
-                    int numberOfElements = Integer.parseInt(inputText);
-                    ArrayList<Integer> numbers = new ArrayList<>();
+                String inputText = numberInput.getText().toString().trim();
 
-                    for (int i = 1; i <= numberOfElements; i++) {
-                        numbers.add(i);
-                    }
-
-                    ArrayList<Integer> perfectSquares = new ArrayList<>();
-                    for (int num : numbers) {
-                        if (isPerfectSquare(num)) {
-                            perfectSquares.add(num);
-                            Toast.makeText(ThirdActivity.this, "Số chính phương: " + num, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    if (perfectSquares.isEmpty()) {
-                        resultTextView.setText("Không có số chính phương");
-                    } else {
-                        resultTextView.setText("Số chính phương: " + perfectSquares.toString());
-                    }
-                } else {
-                    Toast.makeText(ThirdActivity.this, "Vui lòng nhập số phần tử!", Toast.LENGTH_SHORT).show();
+                if (inputText.isEmpty()) {
+                    Toast.makeText(ThirdActivity.this, "Vui lòng nhập số phần tử", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                int numberOfElements = Integer.parseInt(inputText);
+                String result = getPerfectSquares(numberOfElements);
+                resultTextView.setText(result);
             }
         });
     }
 
-    private boolean isPerfectSquare(int number) {
-        int sqrt = (int) Math.sqrt(number);
-        return number == sqrt * sqrt;
+    private String getPerfectSquares(int numberOfElements) {
+        StringBuilder result = new StringBuilder();
+        int count = 0;
+
+        for (int i = 1; i * i < 1000; i++) {
+            if (count >= numberOfElements) {
+                break;
+            }
+            if (result.length() > 0) {
+                result.append(", ");
+            }
+            result.append(i * i);
+            count++;
+        }
+
+
+        if (count == 0) {
+            result.append("Không có số chính phương nào.");
+        }
+
+        return result.toString();
     }
 }
